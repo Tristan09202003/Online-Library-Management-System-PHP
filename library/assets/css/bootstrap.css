@@ -930,8 +930,10 @@ a:focus {
 figure {
   margin: 0;
 }
-img {
-  padding-left: 100px;
+img-fluid {
+  margin-left: -80px;
+
+  
 }
 .img-responsive,
 .thumbnail > img,
@@ -5008,27 +5010,27 @@ a.list-group-item-danger.active:focus {
     border: 1px solid transparent;
     border-radius: 4px;
     width: 150%; /* Use max-width for better responsiveness */
-    height: auto; /* Allow height to adjust based on content */
+    height: 550px; /* Allow height to adjust based on content */
     box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
 
 }
 .panel-body {
-  padding: 15px;
+  padding: 40px;
   
 }
 .panel-heading {
-  padding: 15px 15px;
+  padding: 20px 15px;
   border-bottom: 1px solid transparent;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
+  font-size: 20px;
 }
 .panel-heading > .dropdown .dropdown-toggle {
   color: inherit;
 }
 .panel-title {
-  margin-top: 0;
+  margin-top: 12px;
   margin-bottom: 0;
-  font-size: 16px;
   color: inherit;
 }
 .panel-title > a {
@@ -5261,8 +5263,9 @@ a.list-group-item-danger.active:focus {
 }
 .panel-info {
   border-color: #bce8f1;
-  width: 125%;  
+  width: 155%;  
   margin-top: 110px;         /* width of the box */
+  height: 350px;
 }
 .panel-info > .panel-heading {
   color: #31708f;
