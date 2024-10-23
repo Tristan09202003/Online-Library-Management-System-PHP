@@ -47,13 +47,6 @@ header('location:manage-books.php');
 <?php include('includes/header.php');?>
 <!-- MENU SECTION END-->
     <div class="content-wrapper">
-    <style    
-    .body {
-    background-size: auto;
-    background-position: center;
-    background-repeat: no-repeat;
-    }>
-    </style>
          <div class="container">
         <div class="row pad-botm">
             <div class="col-md-12">

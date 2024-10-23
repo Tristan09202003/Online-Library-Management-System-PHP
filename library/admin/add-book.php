@@ -31,7 +31,7 @@ echo "<script>alert('Invalid format. Only jpg / jpeg/ png /gif format allowed');
 else
 {
 move_uploaded_file($_FILES["bookpic"]["tmp_name"],"bookimg/".$imgnewname);
-$sql="INSERT INTO  tblbooks(BookName,CatId,AuthorId,ISBNNumber,bookImage) VALUES(:bookname,:category,:author,:isbn,:price,:imgnewname)";
+$sql="INSERT INTO  tblbooks(BookName,CatId,AuthorId,ISBNNumber,bookImage) VALUES(:bookname,:category,:author,:isbn,:imgnewname)";
 $query = $dbh->prepare($sql);
 $query->bindParam(':bookname',$bookname,PDO::PARAM_STR);
 $query->bindParam(':category',$category,PDO::PARAM_STR);

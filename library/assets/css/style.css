@@ -55,6 +55,7 @@ body {
 .right-div {
     float: right; 
     padding: 20px;
+    padding-right:-15%;
 }
 #menu-top a {
     color:#000;
