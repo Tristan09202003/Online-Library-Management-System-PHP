@@ -18,7 +18,7 @@
 
 body {
     font-family: 'Open Sans', sans-serif;
-    line-height:15px;
+    line-height:17px;
     background: url(../img/5.png);
     background-size: 100%;
     background-position: center;
@@ -213,10 +213,10 @@ height: 60px;
    FOOTER SECTION STYLES
  ============================================================ */
  .footer-section {
-    padding:30px 8px 11px 20px;
+    padding:30px 0px 20px 120px;
     color:#000000;
     font-size:13px;
-      text-align:center;
+      text-align: center;
        margin-top: 0px;
        width: 100%; 
 }

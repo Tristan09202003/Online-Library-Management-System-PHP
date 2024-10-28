@@ -5009,8 +5009,8 @@ a.list-group-item-danger.active:focus {
     background-color: #fff;
     border: 1px solid transparent;
     border-radius: 4px;
-    width: 150%; /* Use max-width for better responsiveness */
-    height: 550px; /* Allow height to adjust based on content */
+    width: 150%;                                                 /* Use max-width for better responsiveness */
+    height: 550px;                                               /* Allow height to adjust based on content */
     box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
 
 }
@@ -5264,7 +5264,7 @@ a.list-group-item-danger.active:focus {
 .panel-info {
   border-color: #bce8f1;
   width: 155%;  
-  margin-top: 110px;         /* width of the box */
+  margin-top: 110px;                                                       /* width of the box */
   height: 350px;
 }
 .panel-info > .panel-heading {

@@ -16,7 +16,7 @@
 {
 ?> 
             <div class="right-div">
-                <a href="logout.php" class="btn btn-danger pull-right">LOG ME OUT</a>
+                <a href="logout.php" class="btn btn-danger pull-right">LOG OUT</a>
             </div>
             <?php }?>
         </div>
@@ -57,7 +57,7 @@
                         <ul id="menu-top" class="nav navbar-nav navbar-right">                        
                           
       <li><a href="index.php">Home</a></li>
-      <li><a href="index.php#ulogin">User Login</a></li>
+      <li><a href="login.php">User Login</a></li>
                             <li><a href="signup.php">User Signup</a></li>
                          
                             <li><a href="adminlogin.php">Admin Login</a></li>

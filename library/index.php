@@ -2,43 +2,8 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-if($_SESSION['login']!=''){
-$_SESSION['login']='';
-}
-if(isset($_POST['login']))
-{
-
-$email=$_POST['emailid'];
-$password=md5($_POST['password']);
-$sql ="SELECT EmailId,Password,StudentId,Status FROM tblstudents WHERE EmailId=:email and Password=:password";
-$query= $dbh -> prepare($sql);
-$query-> bindParam(':email', $email, PDO::PARAM_STR);
-$query-> bindParam(':password', $password, PDO::PARAM_STR);
-$query-> execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-
-if($query->rowCount() > 0)
-{
- foreach ($results as $result) {
- $_SESSION['stdid']=$result->StudentId;
-if($result->Status==1)
-{
-$_SESSION['login']=$_POST['emailid'];
-echo "<script type='text/javascript'> document.location ='dashboard.php'; </script>";
-} else {
-echo "<script>alert('Your Account Has been blocked .Please contact admin');</script>";
-
-}
-}
-
-} 
-
-else{
-echo "<script>alert('Invalid Details');</script>";
-}
-}
-
 ?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -57,47 +22,70 @@ echo "<script>alert('Invalid Details');</script>";
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 
 </head>
+<style>
+
+        .welcome-container {
+            display: flex;
+            align-items:center;
+            padding: 40px;
+        }
+
+        .text-section {
+            flex: 1;
+            padding-left: 7%; /* Space between text and separator */
+            margin-left: 5%;
+            padding-bottom: 5%;
+        }
+        .text-section h1 {
+            font-size: 30px; /* Larger font size */
+            font-weight: bold; /* Bold text */
+            color: whitesmoke; 
+            text-align: start;
+            padding-bottom: 15px;
+            font-style: italic; 
+        }
+
+        .text-section p {
+            font-style: italic;
+            font-size: medium;
+            font-size: 14px;
+            color:#ccc;
+            line-height: 1.5;
+        }
+
+        .separator {
+            width: 1px;
+            height: 500px; /* Adjust height as needed */
+            background-color: #ccc; /* Line color */
+        }
+
+        .image-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            margin-right: 10%;
+        }
+
+        .image-section img {
+            max-width: 100%; /* Responsive image */
+            height: auto;
+        }
+    </style>
 <body>
     <!------MENU SECTION START-->
 <?php include('includes/header.php');?>
 <!-- MENU SECTION END-->
-<div class="content-wrapper">
-    <div class="container">
-        <div class="row justify-content-center align-items-center">
-            <!-- Image on the Left -->
-            <div class="col-md-6 col-sm-12 text-center">
-                <div class="kingfisher">
-                    <img src="assets/img/kingfisher.png" class="img-fluid" alt="Kingfisher Image"/>
-                </div>
-            </div>
-            
-            <!-- Login Form on the Right -->
-            <div class="col-md-6 col-sm-12">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        LOGIN FORM
-                    </div>
-                    <div class="panel-body">
-                        <form role="form" method="post">
-                            <div class="form-group">
-                                <label>Enter Email ID</label>
-                                <input class="form-control" type="text" name="emailid" required autocomplete="off" />
-                            </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input class="form-control" type="password" name="password" required autocomplete="off" />
-                                <p class="help-block"><a href="user-forgot-password.php">Forgot Password</a></p>
-                            </div>
-                            <button type="submit" name="login" class="btn btn-info">LOGIN</button> | 
-                            <a href="signup.php">Not Registered Yet?</a>
-                        </form>
-                    </div>
-                </div>
-            </div>
+<div class="welcome-container">
+        <div class="text-section">
+            <h1>Welcome Mighty Kingfisher!</h1>
+            <p>This is the Online Library of Southern Leyte State University, providing and dedicated to supporting your research and learning needs,
+               a user-friendly platform to explore a wealth of information anytime, anywhere.</p>
+        </div>
+        <div class="separator"></div>
+        <div class="image-section">
+            <img src="assets/img/kingfisher.png" alt="Welcome Image">
         </div>
     </div>
-</div>
-
 <!---LOGIN PABNEL END-->            
              
  
