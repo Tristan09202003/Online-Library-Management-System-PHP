@@ -51,7 +51,7 @@ header('location:manage-authors.php');
       <!------MENU SECTION START-->
 <?php include('includes/header.php');?>
 <!-- MENU SECTION END-->
-    <div class="content-wra
+    <div class="content-wrap">
     <div class="content-wrapper">
          <div class="container">
         <div class="row pad-botm">
