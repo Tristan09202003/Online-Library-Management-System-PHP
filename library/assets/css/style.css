@@ -30,7 +30,7 @@ body {
     -webkit-border-radius:0px;
 }
 .content-wrapper {
-    margin-top: 29px;
+    margin-top: 40px;
     min-height:90px;
     padding-bottom: 50px;
     
@@ -38,10 +38,13 @@ body {
    
 }
 .header-line {
-    font-weight:900;
-    padding-bottom:13px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight:100px;
+    padding-bottom:20px;
     border-bottom:1px solid #dadada;
     text-transform:uppercase;
+    color: aliceblue;
+    font-size: 30px;
 }
 .pad-botm {
     padding-bottom:30px;
@@ -206,14 +209,14 @@ height: 60px;
 }
 
 .back-widget-set {
-    background-color:transparent;
+    box-shadow: 10px 15px 20px rgba(0, 0, 0, 0.3);
 }
 
 /* =============================================================
    FOOTER SECTION STYLES
  ============================================================ */
  .footer-section {
-    padding:30px 0px 20px 120px;
+    padding:0px 0px 10px 100px;
     color:#000000;
     font-size:13px;
       text-align: center;

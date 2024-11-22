@@ -102,10 +102,11 @@ error:function (){}
              <div class="row">
            
 <div class="col-md-9 col-md-offset-1">
-               <div class="panel panel-danger">
+               <div class="box-danger">
                         <div class="panel-heading">
                            SIGN UP FORM
                         </div>
+                        <div class="separator"></div>
                         <div class="panel-body">
                             <form name="signup" method="post" onSubmit="return valid();">
 

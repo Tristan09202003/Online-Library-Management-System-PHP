@@ -1426,16 +1426,18 @@ pre code {
 }
 .row {
   margin-right: -10px; 
-  margin-left: -1px;
+  margin-left: -5px;
   align-items: center;
+  padding-left: 15px; 
 }
 .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
   position: relative;
   min-height: 1px;
   padding-right: 20%;
-  padding-left: 2%;
+  padding-left: 1%;
   margin-right: -100px;
 }
+
 .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
   float: left;
 }
@@ -1615,7 +1617,7 @@ pre code {
     width: 58.33333333%;
   }
   .col-sm-6 {
-    width: 50%;
+    width: 0%;
   }
   .col-sm-5 {
     width: 41.66666667%;
@@ -1779,7 +1781,7 @@ pre code {
     width: 41.66666667%;
   }
   .col-md-4 {
-    width: 33.33333333%;
+    width: 40.33333333%;
   }
   .col-md-3 {
     width: 25%;
@@ -4648,12 +4650,18 @@ a.thumbnail.active {
   right: -21px;
   color: inherit;
 }
+
 .alert-success {
-  color: #3c763d;
-  background-color: #7fe059;
+  color: #ffffff;
   border-color: #ffffff;
-  background: #ffffff;
-  box-shadow: 0 0 50px rgb(230, 222, 222);
+  background:#4ba925;
+}
+
+.alert-random{
+  color: #ffffff;
+  border-color: #ffffff;
+  background:#16699a;
+
 }
 .alert-success hr {
   border-top-color: #c9e2b3;
@@ -4673,8 +4681,8 @@ a.thumbnail.active {
   color: #245269;
 }
 .alert-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
+  color: #ffffff;
+  background-color: #b59700;
   border-color: #faebcc;
 }
 .alert-warning hr {
@@ -5009,10 +5017,36 @@ a.list-group-item-danger.active:focus {
     background-color: #fff;
     border: 1px solid transparent;
     border-radius: 4px;
-    width: 150%;                                                 /* Use max-width for better responsiveness */
-    height: 550px;                                               /* Allow height to adjust based on content */
+    width: 110%;                                                 /* Use max-width for better responsiveness */
+    height: 400px;                                               /* Allow height to adjust based on content */
     box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
 
+}
+.box{
+  padding-top: 10px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  width: 100%;                                                 /* Use max-width for better responsiveness */
+  height: 730px;                                               /* Allow height to adjust based on content */
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
+  
+
+}
+.box-danger{
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eeeeee;
+  background-color: #fff;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  width: 150%;                                                 /* Use max-width for better responsiveness */
+  height: 550px;                                               /* Allow height to adjust based on content */
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
+
+}
+.separator{
+  border-bottom: 1px solid #f80000;
 }
 .panel-body {
   padding: 40px;

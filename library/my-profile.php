@@ -16,7 +16,7 @@ if (strlen($_SESSION['login']) == 0) {
         if ($imageName) {
             $src = $_FILES['fileImg']['tmp_name'];
             $imageName = uniqid() . '_' . $imageName;  // Generate a unique image name
-            $target = "img/" . $imageName;  // Path to save the uploaded file
+            $target = "assets/img/" . $imageName;  // Path to save the uploaded file
             move_uploaded_file($src, $target);  // Move the file to the img directory
 
             // Update query including the image column
@@ -79,7 +79,7 @@ if (strlen($_SESSION['login']) == 0) {
                                 <!-- Profile Image Upload Section -->
                                 <div class="form-group upload">
                                     <label>Profile Image</label>
-                                    <img src="img/<?php echo htmlentities($result->image); ?>" id="image" width="200" height="125" />
+                                    <img src="assets/img/<?php echo htmlentities($result->image) ?: 'noprofil.jpg'; ?>" id="image" width="200" height="125" />
 
                                     <div class="rightRound" id="upload">
                                         <input type="file" name="fileImg" id="fileImg" accept=".jpg, .jpeg, .png" />
@@ -131,7 +131,7 @@ if (strlen($_SESSION['login']) == 0) {
     <?php include('includes/footer.php'); ?>
     <script src="assets/js/jquery-1.10.2.js"></script>
     <script src="assets/js/bootstrap.js"></script>
-    <script src="assets/js/.js"></script>
+    <script src="assets/js/profile_image.js"></script>
 </body>
 
 </html>

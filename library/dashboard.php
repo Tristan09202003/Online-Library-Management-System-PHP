@@ -56,10 +56,17 @@ $listdbooks=$query->rowCount();
 <h3><?php echo htmlentities($listdbooks);?></h3>
 Books Listed
 </div></div></a>
-             
-               <div class="col-md-4 col-sm-4 col-xs-6">
-                      <div class="alert alert-warning back-widget-set text-center">
-                            <i class="fa fa-recycle fa-5x"></i>
+
+<a href="borrowbook.php"> 
+<div class="col-md-4 col-sm-4 col-xs-6">
+        <div class="alert alert-warning back-widget-set text-center">
+            <i class="fa fa-recycle fa-5x"></i>
+            <h3>&nbsp;</h3>
+            Borrow Book
+        </div>
+    </a>
+</div>
+
 <?php 
 $rsts=0;
  $sid=$_SESSION['stdid'];
@@ -72,14 +79,10 @@ $results2=$query2->fetchAll(PDO::FETCH_OBJ);
 $returnedbooks=$query2->rowCount();
 ?>
 
-                            <h3><?php echo htmlentities($returnedbooks);?></h3>
-                          Books Not Returned Yet
-                        </div>
-                    </div>
 
 <a href="issued-books.php">
 <div class="col-md-4 col-sm-4 col-xs-6">
- <div class="alert alert-success back-widget-set text-center">
+ <div class="alert alert-random back-widget-set text-center">
  <i class="fa fa-book fa-5x"></i>
       <h3>&nbsp;</h3>
 Issued Books

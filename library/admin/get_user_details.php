@@ -59,7 +59,7 @@ if (isset($_GET['stdid'])) {
             <div class="img_container_outer">
                 <div class="img_container_inner">
                     <span>
-                        <img src="img/<?php echo htmlentities($userDetails->image ?: 'default.png'); ?>" alt="Profile Image" />
+                        <img src="../assets/img/<?php echo htmlentities($userDetails->image ?: 'user2.png'); ?>" alt="Profile Image" />
                     </span>
                 </div>
             </div>
@@ -112,5 +112,6 @@ if (isset($_GET['stdid'])) {
     <script src="assets/js/dataTables/dataTables.bootstrap.js"></script>
       <!-- CUSTOM SCRIPTS  -->
     <script src="assets/js/custom.js"></script>
+    <script src="assets/js/profile_image.js"></script>
 </body>
 </html>

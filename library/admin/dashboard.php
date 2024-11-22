@@ -115,9 +115,6 @@ Authors Listed
 
 
  <div class="row">
-
-
-
   <a href="manage-categories.php">            
 <div class="col-md-3 col-sm-3 rscol-xs-6">
 <div class="alert alert-info back-widget-set text-center">
@@ -134,9 +131,26 @@ $listdcats=$query5->rowCount();
                            Listed Categories
                         </div>
                     </div></a>
-             
 
-        </div>             
+<a href="approveborrow.php">            
+<div class="col-md-3 col-sm-3 rscol-xs-6">
+<div class="alert alert-info back-widget-set text-center">
+<i class="fa fa-file-archive-o fa-5x"></i>
+<?php 
+$sql5 ="SELECT id from tblborrowbook ";
+$query5 = $dbh -> prepare($sql5);
+$query5->execute();
+$results5=$query5->fetchAll(PDO::FETCH_OBJ);
+$listdcats=$query5->rowCount();
+?>
+
+                            <h3><?php echo htmlentities($listdcats);?> </h3>
+                           Pending Borrow Request
+                        </div>
+             
+        </div>      
+        
+
             
     </div>
     </div>
