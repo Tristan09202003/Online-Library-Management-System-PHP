@@ -37,7 +37,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
                             <li><a href="dashboard.php" class="menu-top-active">DASHBOARD</a></li>
                             <li><a href="issued-books.php">Issued Books</a></li>
-                            <li><a href="user_notification.php">Notification</a></li>
+                            
 
                             <?php 
                             // Ensure session is started
