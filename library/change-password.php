@@ -31,8 +31,10 @@ else {
 $error="Your current password is wrong";  
 }
 }
-
 ?>
+<!-- Change Password Tab -->
+
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -66,6 +68,12 @@ $error="Your current password is wrong";
     -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
     box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
 }
+
+#changepass{
+  padding-bottom: 400px;
+}
+
+
     </style>
 </head>
 <script type="text/javascript">
@@ -94,10 +102,11 @@ return true;
 </div>
  <?php if($error){?><div class="errorWrap"><strong>ERROR</strong>:<?php echo htmlentities($error); ?> </div><?php } 
         else if($msg){?><div class="succWrap"><strong>SUCCESS</strong>:<?php echo htmlentities($msg); ?> </div><?php }?>            
-<!--LOGIN PANEL START-->           
+<!--LOGIN PANEL START-->
+           
 <div class="row">
 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3" >
-<div class="panel panel-info">
+<div class="panel panel-info" id="changepass">
 <div class="panel-heading">
 Change Password
 </div>
@@ -119,12 +128,14 @@ Change Password
 <input class="form-control"  type="password" name="confirmpassword" autocomplete="off" required  />
 </div>
 
- <button type="submit" name="change" class="btn btn-info">Chnage </button> 
+ <button type="submit" name="change" class="btn btn-info">Change </button>
+ <a class="btn btn-primary" href="my-profile.php">Back to My Profile</a> 
 </form>
  </div>
 </div>
 </div>
 </div>  
+
 <!---LOGIN PABNEL END-->            
              
  

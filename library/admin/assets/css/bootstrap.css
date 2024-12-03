@@ -2083,14 +2083,14 @@ th {
 }
 
 .img_container_outer {
-  width: 400px; /* Set width for the outer container */
-  height: 330px;
+  width: 300px; /* Set width for the outer container */
+  height: 340px;
   margin-right: 20px; /* Space between image and details */
-  border: 1px solid #ccc; /* Optional: Add a border */
-  padding: 10px;
+  padding: px;
   display: flex;
   justify-content: center;
   align-items: center;
+ border-color: #1898d8;
 }
 
 .img_container_inner img {
@@ -5049,8 +5049,8 @@ a.list-group-item-danger.active:focus {
   border: 1px solid transparent;
   border-radius: 4px;
   width: auto;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-          box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+          box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 }
 .panel-body {
   padding: 15px;
@@ -5263,7 +5263,7 @@ a.list-group-item-danger.active:focus {
   border-bottom-color: #ddd;
 }
 .panel-primary {
-  border-color: #428bca;
+  border-color: #ffffff;
 }
 .panel-primary > .panel-heading {
   color: #fff;

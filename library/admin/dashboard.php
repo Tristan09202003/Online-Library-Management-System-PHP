@@ -137,7 +137,7 @@ $listdcats=$query5->rowCount();
 <div class="alert alert-info back-widget-set text-center">
 <i class="fa fa-file-archive-o fa-5x"></i>
 <?php 
-$sql5 ="SELECT id from tblborrowbook ";
+$sql5 ="SELECT * from tblissuedbookdetails WHERE Is_approve IS NULL";
 $query5 = $dbh -> prepare($sql5);
 $query5->execute();
 $results5=$query5->fetchAll(PDO::FETCH_OBJ);

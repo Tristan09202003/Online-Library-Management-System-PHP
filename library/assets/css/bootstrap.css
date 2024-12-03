@@ -1617,7 +1617,7 @@ pre code {
     width: 58.33333333%;
   }
   .col-sm-6 {
-    width: 0%;
+    width: 60%;
   }
   .col-sm-5 {
     width: 41.66666667%;
@@ -5017,8 +5017,8 @@ a.list-group-item-danger.active:focus {
     background-color: #fff;
     border: 1px solid transparent;
     border-radius: 4px;
-    width: 110%;                                                 /* Use max-width for better responsiveness */
-    height: 400px;                                               /* Allow height to adjust based on content */
+    width: 115%;                                                 /* Use max-width for better responsiveness */
+    height: 500px;                                               /* Allow height to adjust based on content */
     box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
 
 }

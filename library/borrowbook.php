@@ -1,39 +1,45 @@
 <?php
-session_start(); 
+session_start();
 // Include database connection
 include('includes/config.php');
 
 // Check if the form was submitted
 if (isset($_POST['submit'])) {
     // Collect and sanitize form data
-    $studentId = $_POST['studentId'];
-    $studentName = $_POST['studentName'];
+    $studentId = $_SESSION['stdid']; //Retrieves the logged-in student’s ID from the session.
+    $borrowDate = date('Y-m-d'); // Current system date
+    $returnDate = $_POST['returnDate'] . ' 08:00:00'; // Append time to the return date
     $isbn = $_POST['isbn'];
-    $bookTitle = $_POST['bookTitle']; // Added bookTitle
-    $borrowDate = $_POST['borrowDate'];
-    $returnDate = $_POST['returnDate'];
-
-    // Prepare SQL query
-    $sql = "INSERT INTO tblborrowbook (studentId, name, isbn_number, book_title, borrow_date, return_date) 
-            VALUES (:studentId, :studentName, :isbn, :bookTitle, :borrowDate, :returnDate)"; // Updated query
 
     try {
-        // Prepare statement and bind parameters with types
+        // Check if the book exists
+        $sql = "SELECT id FROM tblbooks WHERE ISBNNumber = :isbn";
         $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(':studentId', $studentId, PDO::PARAM_INT);
-        $stmt->bindParam(':studentName', $studentName, PDO::PARAM_STR);
         $stmt->bindParam(':isbn', $isbn, PDO::PARAM_STR);
-        $stmt->bindParam(':bookTitle', $bookTitle, PDO::PARAM_STR); // Bind bookTitle
-        $stmt->bindParam(':borrowDate', $borrowDate, PDO::PARAM_STR);
-        $stmt->bindParam(':returnDate', $returnDate, PDO::PARAM_STR);
+        $stmt->execute();
 
-        // Execute the query
-        if ($stmt->execute()) {
-            $_SESSION['msg'] = "Book borrowed successfully!";
-            header('Location: borrowbook.php'); // Redirect back to the form with success
-            exit; // Ensure the script stops after redirection
+        $book = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($book) {
+            $bookId = $book['id'];
+
+            // Insert into tblissuedbookdetails
+            $sql = "INSERT INTO tblissuedbookdetails (StudentID, BookId, ReturnDate) 
+                    VALUES (:studentId, :bookId, :returnDate)";
+            $stmt = $dbh->prepare($sql);
+            $stmt->bindParam(':studentId', $studentId, PDO::PARAM_STR);
+            $stmt->bindParam(':bookId', $bookId, PDO::PARAM_INT);
+            $stmt->bindParam(':returnDate', $returnDate, PDO::PARAM_STR);
+
+            if ($stmt->execute()) {
+                $_SESSION['msg'] = "Book borrowed successfully!";
+                header('Location: borrowbook.php');
+                exit;
+            } else {
+                $_SESSION['error'] = "Error borrowing book. Please try again.";
+            }
         } else {
-            $_SESSION['error'] = "Error borrowing book. Please try again.";
+            $_SESSION['error'] = "Book with the provided ISBN does not exist.";
         }
     } catch (PDOException $e) {
         $_SESSION['error'] = "Error: " . $e->getMessage();
@@ -56,7 +62,6 @@ if (isset($_POST['submit'])) {
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 
     <style>
-        /* Style for the box */
         .form-container {
             max-width: 500px;
             margin: 50px auto;
@@ -67,7 +72,6 @@ if (isset($_POST['submit'])) {
             background-color: #f9f9f9;
         }
 
-        /* Style for form elements */
         h2 {
             text-align: center;
             color: #333;
@@ -97,16 +101,23 @@ if (isset($_POST['submit'])) {
             border: none;
             border-radius: 4px;
             font-size: 16px;
-            
         }
 
         button:hover {
             background-color: #0056b3;
         }
     </style>
+    <script>
+        // Prevent past dates for the return date input
+        document.addEventListener('DOMContentLoaded', function() {
+            const returnDateInput = document.getElementById('returnDate');
+            const today = new Date().toISOString().split('T')[0];
+            returnDateInput.setAttribute('min', today);
+        });
+    </script>
 </head>
 <body>
-    <?php include('includes/header.php');?>
+    <?php include('includes/header.php'); ?>
 
     <div class="content-wrapper">
         <div class="container">
@@ -116,7 +127,6 @@ if (isset($_POST['submit'])) {
                 </div>
             </div>
             <div class="form-container">
-                <!-- Display success or error message -->
                 <?php if (isset($_SESSION['msg'])) { ?>
                     <div class="alert alert-success">
                         <?php echo $_SESSION['msg']; ?>
@@ -129,20 +139,8 @@ if (isset($_POST['submit'])) {
                 <?php unset($_SESSION['error']); } ?>
 
                 <form action="borrowbook.php" method="POST">
-                    <label for="studentId">Student ID:</label>
-                    <input type="text" id="studentId" name="studentId" required>
-
-                    <label for="studentName">Student Name:</label>
-                    <input type="text" id="studentName" name="studentName" required>
-
-                    <label for="bookTitle">Book Title:</label>
-                    <input type="text" id="bookTitle" name="bookTitle" required> <!-- Added field for book title -->
-
                     <label for="isbn">ISBN Number:</label>
                     <input type="text" id="isbn" name="isbn" required>
-
-                    <label for="borrowDate">Borrow Date:</label>
-                    <input type="date" id="borrowDate" name="borrowDate" required>
 
                     <label for="returnDate">Return Date:</label>
                     <input type="date" id="returnDate" name="returnDate" required>
@@ -153,7 +151,7 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
 
-    <?php include('includes/footer.php');?>
+    <?php include('includes/footer.php'); ?>
 
     <script src="assets/js/jquery-1.10.2.js"></script>
     <script src="assets/js/bootstrap.js"></script>

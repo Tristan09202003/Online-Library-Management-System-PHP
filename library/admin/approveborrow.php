@@ -2,60 +2,47 @@
 session_start();
 include('includes/config.php');
 
-// Handle accept or reject action
+// Handle accept action
 if (isset($_POST['approve'])) {
     $borrowId = $_POST['borrowId'];
-    $action = 'accepted'; // Action to approve
 
-    // Fetch the borrow request details first
-    $sql = "SELECT * FROM tblborrowbook WHERE id = :borrowId";
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindParam(':borrowId', $borrowId, PDO::PARAM_INT);
-    $stmt->execute();
-    $request = $stmt->fetch(PDO::FETCH_OBJ);
-
-    // If the borrow request exists, move to tblissuedbookdetails
-    if ($request) {
-        // Prepare the insert query
-        $sql = "INSERT INTO tblissuedbookdetails (BookId, StudentID, IssuesDate, ReturnDate, RetrunStatus) 
-                VALUES (:BookId, :StudentID, :IssuesDate, :ReturnDate, :RetrunStatus)";
+    try {
+        // Update Is_approve to 1 for the specified row
+        $sql = "UPDATE tblissuedbookdetails SET Is_approve = 1 WHERE id = :borrowId";
         $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(':BookId', $request->book_id);  // Ensure this matches column in tblborrowbook
-        $stmt->bindParam(':StudentID', $request->student_id);  // Ensure this matches
-        $stmt->bindParam(':IssuesDate', $request->borrow_date);
-        $stmt->bindParam(':ReturnDate', $request->return_date);
-        $stmt->bindParam(':RetrunStatus', $returnStatus); // This could be 'Not Returned' or similar
-
-        // Execute insert
+        $stmt->bindParam(':borrowId', $borrowId, PDO::PARAM_INT);
+        
         if ($stmt->execute()) {
-            // After inserting into issued books, delete from tblborrowbook
-            $sql = "DELETE FROM tblborrowbook WHERE id = :borrowId";
-            $stmt = $dbh->prepare($sql);
-            $stmt->bindParam(':borrowId', $borrowId, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $_SESSION['msg'] = "Borrow request accepted and moved to Issued Books!";
+            $_SESSION['msg'] = "Borrow request approved!";
         } else {
-            $_SESSION['msg'] = "Error: Failed to issue the book.";
+            $_SESSION['msg'] = "Error: Could not approve the borrow request.";
         }
-    } else {
-        $_SESSION['msg'] = "Error: Borrow request not found.";
+    } catch (PDOException $e) {
+        $_SESSION['msg'] = "Error: " . $e->getMessage();
     }
 }
 
+// Handle reject action
 if (isset($_POST['reject'])) {
     $borrowId = $_POST['borrowId'];
-    $action = 'rejected'; // Action to reject
 
-    // Delete the rejected borrow request
-    $sql = "DELETE FROM tblborrowbook WHERE id = :borrowId";
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindParam(':borrowId', $borrowId, PDO::PARAM_INT);
-    $stmt->execute();
-    
-    $_SESSION['msg'] = "Borrow request rejected and deleted!";
+    try {
+        // Update Is_approve to 0 for the specified row
+        $sql = "UPDATE tblissuedbookdetails SET Is_approve = 0 WHERE id = :borrowId";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(':borrowId', $borrowId, PDO::PARAM_INT);
+        
+        if ($stmt->execute()) {
+            $_SESSION['msg'] = "Borrow request rejected!";
+        } else {
+            $_SESSION['msg'] = "Error: Could not reject the borrow request.";
+        }
+    } catch (PDOException $e) {
+        $_SESSION['msg'] = "Error: " . $e->getMessage();
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -64,7 +51,7 @@ if (isset($_POST['reject'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Online Library Management System | Borrow Book</title>
+    <title>Online Library Management System | Approve Borrow Requests</title>
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <link href="assets/css/font-awesome.css" rel="stylesheet" />
     <link href="assets/js/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
@@ -95,20 +82,36 @@ if (isset($_POST['reject'])) {
         .table-box th {
             background-color: #f2f2f2;
         }
+
+        .btn-action {
+            margin: 0 5px;
+        }
     </style>
 </head>
 <body>
-
 <?php include('includes/header.php');?>
 
 <div class="container">
     <h4 class="header-line">Manage Borrow Requests</h4>
 
-    <?php if (isset($_SESSION['msg'])) { ?>
+    <?php 
+    // Display success or error messages
+    if (isset($_SESSION['msg'])) { ?>
         <div class="alert alert-success">
-            <?php echo $_SESSION['msg']; ?>
+            <?php 
+            echo htmlspecialchars($_SESSION['msg']); 
+            unset($_SESSION['msg']); 
+            ?>
         </div>
-        <?php unset($_SESSION['msg']); ?>
+    <?php } ?>
+
+    <?php if (isset($_SESSION['error'])) { ?>
+        <div class="alert alert-danger">
+            <?php 
+            echo htmlspecialchars($_SESSION['error']); 
+            unset($_SESSION['error']); 
+            ?>
+        </div>
     <?php } ?>
 
     <div class="table-box">
@@ -127,28 +130,37 @@ if (isset($_POST['reject'])) {
             <tbody>
                 <?php
                 // Fetch all borrow requests
-                $sql = "SELECT * FROM tblborrowbook";
+                $sql = "SELECT tblstudents.FullName, tblbooks.BookName, tblbooks.ISBNNumber, tblissuedbookdetails.IssuesDate, tblissuedbookdetails.ReturnDate, tblissuedbookdetails.id 
+                        FROM tblissuedbookdetails 
+                        LEFT JOIN tblstudents ON tblstudents.StudentId = tblissuedbookdetails.StudentId 
+                        LEFT JOIN tblbooks ON tblbooks.id = tblissuedbookdetails.BookId 
+                        WHERE tblissuedbookdetails.Is_approve IS NULL
+                        ORDER BY tblissuedbookdetails.IssuesDate DESC";
                 $stmt = $dbh->prepare($sql);
                 $stmt->execute();
                 $requests = $stmt->fetchAll(PDO::FETCH_OBJ);
+                $cnt = 1;
 
                 foreach ($requests as $request) {
                     ?>
                     <tr>
-                        <td><?php echo $request->id; ?></td>
-                        <td><?php echo $request->name; ?></td>
-                        <td><?php echo $request->book_title; ?></td>
-                        <td><?php echo $request->isbn_number; ?></td>
-                        <td><?php echo $request->borrow_date; ?></td>
-                        <td><?php echo $request->return_date; ?></td>
+                        <td><?php echo htmlspecialchars($cnt); ?></td>
+                        <td><?php echo htmlspecialchars($request->FullName); ?></td>
+                        <td><?php echo htmlspecialchars($request->BookName); ?></td>
+                        <td><?php echo htmlspecialchars($request->ISBNNumber); ?></td>
+                        <td><?php echo htmlspecialchars($request->IssuesDate); ?></td>
+                        <td><?php echo htmlspecialchars($request->ReturnDate); ?></td>
                         <td>
                             <form method="POST" action="">
                                 <input type="hidden" name="borrowId" value="<?php echo $request->id; ?>">
-                                <button type="submit" name="approve" class="btn btn-success">Approve</button>
-                                <button type="submit" name="reject" class="btn btn-danger">Reject</button>
+                                <button type="submit" name="approve" class="btn btn-success btn-action">Approve</button>
+                                <button type="submit" name="reject" class="btn btn-danger btn-action">Reject</button>
                             </form>
                         </td>
                     </tr>
+                    <?php 
+                        $cnt++; 
+                    ?>  
                 <?php } ?>
             </tbody>
         </table>
@@ -156,10 +168,6 @@ if (isset($_POST['reject'])) {
 </div>
 
 <?php include('includes/footer.php');?>
-
-<script src="assets/js/jquery-1.10.2.js"></script>
-<script src="assets/js/bootstrap.js"></script>
-<script src="assets/js/custom.js"></script>
 
 </body>
 </html>

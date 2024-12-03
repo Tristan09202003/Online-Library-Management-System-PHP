@@ -82,6 +82,11 @@ error:function (){}
   .others{
     color:red;
 }
+.h4{
+    color:black
+}
+
+
 
 </style>
 
@@ -110,7 +115,24 @@ Issued Book Details
 <form role="form" method="post">
 <?php 
 $rid=intval($_GET['rid']);
-$sql = "SELECT tblstudents.StudentId ,tblstudents.FullName,tblstudents.EmailId,tblstudents.MobileNumber,tblbooks.BookName,tblbooks.ISBNNumber,tblissuedbookdetails.IssuesDate,tblissuedbookdetails.ReturnDate,tblissuedbookdetails.id as rid,tblissuedbookdetails.fine,tblissuedbookdetails.RetrunStatus,tblbooks.id as bid,tblbooks.bookImage from  tblissuedbookdetails join tblstudents on tblstudents.StudentId=tblissuedbookdetails.StudentId join tblbooks on tblbooks.id=tblissuedbookdetails.BookId where tblissuedbookdetails.id=:rid";
+$sql = "SELECT tblstudents.StudentId,
+               tblstudents.FullName,
+               tblstudents.EmailId,
+               tblstudents.MobileNumber,
+               tblbooks.BookName,
+               tblbooks.ISBNNumber,
+               tblissuedbookdetails.IssuesDate,
+               tblissuedbookdetails.ReturnDate,
+               tblissuedbookdetails.id as rid,
+               tblissuedbookdetails.fine,
+               tblissuedbookdetails.RetrunStatus,
+               tblbooks.id as bid,
+               tblbooks.bookImage 
+        FROM tblissuedbookdetails 
+        JOIN tblstudents ON tblstudents.StudentId = tblissuedbookdetails.StudentId 
+        JOIN tblbooks ON tblbooks.id = tblissuedbookdetails.BookId 
+        WHERE tblissuedbookdetails.id = :rid";
+
 $query = $dbh -> prepare($sql);
 $query->bindParam(':rid',$rid,PDO::PARAM_STR);
 $query->execute();
@@ -124,7 +146,7 @@ foreach($results as $result)
 
 
 <input type="hidden" name="bookid" value="<?php echo htmlentities($result->bid);?>">
-<h4>Student Details</h4>
+
 <hr />
 <div class="col-md-6"> 
 <div class="form-group">
@@ -151,8 +173,7 @@ foreach($results as $result)
 </div></div>
 
 
-
-<h4>Book Details</h4>
+<div class="separator"></div>
 <hr />
 
 <div class="col-md-6"> 
@@ -198,12 +219,11 @@ foreach($results as $result)
 
 <div class="col-md-12"> 
 <div class="form-group">
-<label>Fine (in USD) :</label>
+<label>Fine :</label>
 <?php 
 if($result->fine=="")
 {?>
 <input class="form-control" type="text" name="fine" id="fine"/>
-<input class="form-control" type="text" name="fine" id="fine" value="Paid" readonly/> <!-- not done yet  -->
 
 <?php }else {
 echo htmlentities($result->fine);

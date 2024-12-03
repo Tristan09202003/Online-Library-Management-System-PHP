@@ -10,52 +10,69 @@ if (strlen($_SESSION['alogin']) == 0) {
 
 // Fetch current admin details
 $username = $_SESSION['alogin'];
-$sql = "SELECT FullName, AdminEmail, UserName FROM admin WHERE UserName = :username"; // Use correct column names
+$sql = "SELECT FullName, AdminEmail, UserName, ProfileImage FROM admin WHERE UserName = :username";
 $stmt = $dbh->prepare($sql);
 $stmt->bindParam(':username', $username);
 $stmt->execute();
 $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Handle form submission for updating details
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) {
     $newFullName = $_POST['fullName'];
     $newEmail = $_POST['adminEmail'];
-    $newUsername = $_POST['username'];
-    $newPassword = $_POST['newPassword'] ?? ''; // New password input
+    $imageName = null;
+
+    // Handle image upload
+    if (!empty($_FILES['fileImg']['name'])) {
+        $src = $_FILES['fileImg']['tmp_name'];
+        $imageName = uniqid() . '_' . $_FILES['fileImg']['name'];
+        $target = "assets/img/" . $imageName;
+        move_uploaded_file($src, $target);
+    }
 
     // Prepare the update query
-    $sql = "UPDATE admin SET FullName = :fullName, AdminEmail = :adminEmail, UserName = :username WHERE UserName = :current_username";
+    $sql = "UPDATE admin SET FullName = :fullName, AdminEmail = :adminEmail";
+    
+    // Add image to update if a new image was uploaded
+    if ($imageName) {
+        $sql .= ", ProfileImage = :profileImage";
+    }
+
+    $sql .= " WHERE UserName = :username";
     $stmt = $dbh->prepare($sql);
     
     // Bind parameters
     $stmt->bindParam(':fullName', $newFullName);
     $stmt->bindParam(':adminEmail', $newEmail);
-    $stmt->bindParam(':username', $newUsername);
-    $stmt->bindParam(':current_username', $username);
+    $stmt->bindParam(':username', $username);
+    
+    if ($imageName) {
+        $stmt->bindParam(':profileImage', $imageName);
+    }
     
     // Execute the statement
     if ($stmt->execute()) {
         // Update password if provided
-        if (!empty($newPassword)) {
-            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT); // Hash the new password
-            $sql = "UPDATE admin SET Password = :password WHERE UserName = :current_username";
+        if (!empty($_POST['newPassword'])) {
+            $newPassword = $_POST['newPassword'];
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $sql = "UPDATE admin SET Password = :password WHERE UserName = :username";
             $stmt = $dbh->prepare($sql);
             $stmt->bindParam(':password', $hashedPassword);
-            $stmt->bindParam(':current_username', $username);
+            $stmt->bindParam(':username', $username);
             $stmt->execute();
         }
 
-        $_SESSION['alogin'] = $newUsername; // Update session variable if username changed
-        $_SESSION['msg'] = "Details updated successfully!";
-    } else {
-        $_SESSION['error'] = "Error updating details.";
-    }
+        // Refresh admin details
+        $stmt = $dbh->prepare("SELECT FullName, AdminEmail, UserName, ProfileImage FROM admin WHERE UserName = :username");
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Refresh the admin details after update
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindParam(':username', $newUsername);
-    $stmt->execute();
-    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        echo '<script>alert("Profile updated successfully!");</script>';
+    } else {
+        echo '<script>alert("Error updating profile.");</script>';
+    }
 }
 ?>
 
@@ -69,112 +86,147 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="assets/css/font-awesome.css" rel="stylesheet" />
     <link href="assets/css/style.css" rel="stylesheet" />
     <style>
-        .profile-box {
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
             padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+            border-radius: 8px;
         }
-        .form-group {
+
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .avatar-section img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
             margin-bottom: 15px;
+            border: 3px solid #007bff;
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .profile-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-field label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .profile-field input,
+        .profile-field .static-value {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            height: 40px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            
+        }
+        .col-md-12 {
+            color:white;
         }
     </style>
 </head>
 <body>
-<?php include('includes/header.php'); ?>
+    <?php include('includes/header.php'); ?>
 
-<div class="content-wrapper">
-    <div class="container">
-        <h4 class="header-line">Admin Profile</h4>
-
-        <?php if (isset($_SESSION['error'])) { ?>
-            <div class="alert alert-danger">
-                <strong>Error:</strong> <?php echo htmlentities($_SESSION['error']); unset($_SESSION['error']); ?>
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row pad-botm">
+                <div class="col-md-12">
+                    <h2 class="header-line">Admin Profile</h2>
+                </div>
             </div>
-        <?php } ?>
-        <?php if (isset($_SESSION['msg'])) { ?>
-            <div class="alert alert-success">
-                <strong>Success:</strong> <?php echo htmlentities($_SESSION['msg']); unset($_SESSION['msg']); ?>
-            </div>
-        <?php } ?>
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Profile Details</div>
+                        <div class="panel-body">
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="profile-grid">
+                                    <!-- Avatar Section -->
+                                    <div class="avatar-section">
+                                        <img src="assets/img/<?php echo htmlentities($admin['ProfileImage'] ?: 'noprofil.jpg'); ?>" id="image" alt="Profile Picture" />
+                                        <input type="file" name="fileImg" id="fileImg" accept=".jpg, .jpeg, .png" style="display:none;" />
+                                        <label for="fileImg" class="btn btn-primary btn-sm mt-3">
+                                            <i class="fa fa-camera"></i> Change Photo
+                                        </label>
+                                    </div>
 
-        <div class="profile-box">
-            <form action="admin-profile.php" method="POST" id="profileForm">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="fullName">Name:</label>
-                            <input type="text" name="fullName" class="form-control" value="<?php echo htmlspecialchars($admin['FullName']); ?>" readonly required>
-                        </div>
-                        <div class="form-group">
-                            <label for="username">User Name:</label>
-                            <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($admin['UserName']); ?>" readonly required>
-                        </div>
-                        <div class="form-group">
-                            <label for="adminEmail">Admin Email:</label>
-                            <input type="email" name="adminEmail" class="form-control" value="<?php echo htmlspecialchars($admin['AdminEmail']); ?>" readonly required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="currentPassword">Current Password:</label>
-                            <input type="password" name="currentPassword" class="form-control" placeholder="Enter current password" id="currentPassword" readonly required>
-                        </div>
-                        <div class="form-group">
-                            <label for="newPassword">New Password:</label>
-                            <input type="password" name="newPassword" class="form-control" placeholder="Enter new password" id="newPassword" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword">Confirm Password:</label>
-                            <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm new password" id="confirmPassword" readonly>
+                                    <!-- Info Section -->
+                                    <div class="info-section">
+                                        <div class="profile-field">
+                                            <label>Full Name</label>
+                                            <input class="form-control" type="text" name="fullName"
+                                                value="<?php echo htmlentities($admin['FullName']); ?>" required />
+                                        </div>
+
+                                        <div class="profile-field">
+                                            <label>Username</label>
+                                            <div class="static-value form-control">
+                                                <?php echo htmlentities($admin['UserName']); ?>  
+                                            </div>
+                                        </div>
+
+                                        <div class="profile-field">
+                                            <label>Email Address</label>
+                                            <input class="form-control" type="email" name="adminEmail"
+                                                value="<?php echo htmlentities($admin['AdminEmail']); ?>" required />
+                                        </div>
+
+                                        </div>
+
+                                        <div class="btn-group">
+                                            <button type="submit" name="update" class="btn btn-success">
+                                                <i class="fa fa-save"></i> Update Profile
+                                            </button>
+                                            <a href="change-admin-password.php" class="btn btn-primary">
+                                                <i class="fa fa-lock"></i> Change Password
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-
-                <button type="button" id="editButton" class="btn btn-primary">Edit</button>
-                <button type="submit" id="saveButton" class="btn btn-success" style="display: none;">Save Changes</button>
-                <button type="button" id="cancelButton" class="btn btn-secondary" style="display: none;">Cancel</button>
-            </form>
+            </div>
         </div>
     </div>
-</div>
 
-<?php include('includes/footer.php'); ?>
-
-<script src="assets/js/jquery-1.10.2.js"></script>
-<script>
-    // JavaScript to toggle between view and edit mode
-    document.getElementById('editButton').onclick = function() {
-        toggleEditMode(true);
-    };
-    document.getElementById('cancelButton').onclick = function() {
-        toggleEditMode(false);
-    };
-
-    function toggleEditMode(enableEdit) {
-        const form = document.getElementById('profileForm');
-        const inputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]');
-        inputs.forEach(input => {
-            input.readOnly = !enableEdit;
-            if (enableEdit) {
-                // Show password fields if editing
-                if (input.name === 'currentPassword') {
-                    input.type = 'text'; // Change to text to show password
-                }
-            } else {
-                // Hide password fields when not editing
-                if (input.name === 'currentPassword') {
-                    input.type = 'password'; // Change back to password to hide it
-                }
+    <?php include('includes/footer.php'); ?>
+    <script src="assets/js/jquery-1.10.2.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script>
+        document.getElementById('fileImg').addEventListener('change', function(event) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image').src = e.target.result;
+            };
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
             }
         });
-
-        document.getElementById('editButton').style.display = enableEdit ? 'none' : 'inline-block';
-        document.getElementById('saveButton').style.display = enableEdit ? 'inline-block' : 'none';
-        document.getElementById('cancelButton').style.display = enableEdit ? 'inline-block' : 'none';
-    }
-</script>
+    </script>
 </body>
 </html>
