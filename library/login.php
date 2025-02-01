@@ -51,7 +51,7 @@ if (isset($_POST['login'])) {
             // Invalid login
             $error = "Invalid email or password";
         }
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         // Log error for debugging
         error_log("Login Error: " . $e->getMessage());
         $error = "An error occurred. Please try again.";
@@ -61,11 +61,12 @@ if (isset($_POST['login'])) {
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <title>Online Library Management System | Login</title>
-    
+
     <!-- CSS Links -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <link href="assets/css/font-awesome.css" rel="stylesheet" />
@@ -77,8 +78,18 @@ if (isset($_POST['login'])) {
             color: red;
             margin-bottom: 15px;
         }
+        .dropdown-divider{
+            margin-top: 10px;
+        }
+
+        .dropdown-item1{
+            padding-top: 20px;
+            
+        }
+        
     </style>
 </head>
+
 <body>
     <?php include('includes/header.php'); ?>
 
@@ -99,9 +110,9 @@ if (isset($_POST['login'])) {
                             LOGIN FORM
                         </div>
                         <div class="panel-body">
-                            <?php 
+                            <?php
                             // Display error messages
-                            if(isset($error)) {
+                            if (isset($error)) {
                                 echo "<div class='error-message'>$error</div>";
                             }
                             ?>
@@ -113,16 +124,18 @@ if (isset($_POST['login'])) {
                                 <div class="form-group">
                                     <label>Password</label>
                                     <input class="form-control" type="password" name="password" required autocomplete="off" />
-                                    <p class="help-block"><a href="user-forgot-password.php">Forgot Password</a></p>
+                                    <a class="dropdown-item1" href="#"></a>
                                 </div>
-                                <button type="submit" name="login" class="btn btn-info">LOGIN</button> | 
-                                <a href="signup.php">Not Registered Yet?</a>
+                                <button type="submit" name="login" class="btn btn-info">LOGIN</button>
                             </form>
-                        </div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="signup.php">New around here? Sign up</a> 
+                        
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <?php include('includes/footer.php'); ?>
@@ -132,4 +145,5 @@ if (isset($_POST['login'])) {
     <script src="assets/js/bootstrap.js"></script>
     <script src="assets/js/custom.js"></script>
 </body>
+
 </html>

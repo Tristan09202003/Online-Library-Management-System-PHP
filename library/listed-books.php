@@ -6,11 +6,7 @@ if(strlen($_SESSION['login'])==0)
     {   
 header('location:index.php');
 }
-else{ 
-
-
-
-    ?>
+else{ ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -39,7 +35,7 @@ else{
          <div class="container">
         <div class="row pad-botm">
             <div class="col-md-12">
-                <h4 class="header-line">Manage Issued Books</h4>
+                <h4 class="header-line">Books Available</h4>
     </div>
     
 
@@ -53,7 +49,21 @@ else{
                         <div class="panel-body">
                        
 
-<?php $sql = "SELECT tblbooks.BookName,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.id as bookid,tblbooks.bookImage,tblbooks.isIssued from  tblbooks join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId";
+<?php $sql = "SELECT 
+    tblbooks.BookName,
+    tblcategory.CategoryName,
+    tblauthors.AuthorName,
+    tblbooks.ISBNNumber,
+    tblbooks.id AS bookid,
+    tblbooks.bookImage,
+    tblbooks.isIssued
+FROM  
+    tblbooks
+JOIN 
+    tblcategory ON tblcategory.id = tblbooks.CatId
+JOIN 
+    tblauthors ON tblauthors.id = tblbooks.AuthorId;";
+
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
@@ -61,7 +71,7 @@ $cnt=1;
 if($query->rowCount() > 0)
 {
 foreach($results as $result)
-{               ?>  
+{               ?>
 <div class="col-md-4" style="float:left; height:300px;">   
 
 

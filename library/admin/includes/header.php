@@ -69,21 +69,19 @@
                             if (isset($_SESSION['stdid'])) {
                                 try {
                                     // Get user ID from session
-                                    $sid = $_SESSION['stdid'];
+                                    $id = $_SESSION['stdid'];
 
                                     // Corrected query
-                                    $sql = "SELECT * FROM admin WHERE id = :id";
+                                    $sql = "SELECT * FROM tblstudents WHERE UserName = :username";
                                     $query = $dbh->prepare($sql);
-                                    $query->bindParam(':id', $sid, PDO::PARAM_INT);
+                                    $query->bindParam(':username', $id, PDO::PARAM_INT);
                                     $query->execute();
 
                                     // Fetch results
                                     $result = $query->fetch(PDO::FETCH_OBJ);
 
-                                    // Determine the profile image source
-                                    $userImageSrc = ($result && !empty($result->ProfileImage))
-                                        ? "assets/img/" . htmlspecialchars($result->ProfileImage)
-                                        : "assets/img/noprofil.jpg";
+                                   // Determine the profile image source
+                                   $userImageSrc = $result && $result->ProfileImage ? "assets/img/" . $result->ProfileImage : "assets/img/noprofil.jpg";
                                 } catch (Exception $e) {
                                     // Handle database errors gracefully
                                     $userImageSrc = "assets/img/noprofil.jpg";
@@ -98,14 +96,15 @@
 
                         <style>
                             .user-profile-circle {
-                                width: 30px;
-                                height: 30px;
+                                width: 40px;
+                                height: 40px;
                                 border-radius: 50%;
                                 object-fit: cover;
                                 cursor: pointer;
                                 border: 2px solid white;
                                 transition: transform 0.2s;
                                 justify-content: center;
+                                
                             }
 
                             .user-profile-circle:hover {

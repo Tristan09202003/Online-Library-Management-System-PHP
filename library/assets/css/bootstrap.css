@@ -916,6 +916,7 @@ textarea {
 a {
   color: #428bca;
   text-decoration: none;
+  
 }
 a:hover,
 a:focus {
@@ -1410,7 +1411,7 @@ pre code {
 }
 @media (min-width: 992px) {
   .container {
-    width: 970px;
+    width: 970px;   
   }
 }
 @media (min-width: 1200px) {
@@ -1418,6 +1419,7 @@ pre code {
     width: 1170px;
   }
 }
+
 .container-fluid {
   padding-right: 15px;
   padding-left: 15px;
@@ -3972,6 +3974,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
   .navbar-nav > li {
     float: left;
+    
   }
   .navbar-nav > li > a {
     padding-top: 15px;
